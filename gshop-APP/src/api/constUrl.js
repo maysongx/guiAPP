@@ -1,0 +1,11 @@
+const BASE_URL = '/api'
+export const POSITION_URL = BASE_URL + '/position/' //根据经纬度获取位置信息
+export const CATEGORY_LIST_URL = BASE_URL + '/index_category' //获取食品分类列表
+export const SHOP_LIST_URL = BASE_URL + '/shops' //根据经纬度获取附近的商铺列表
+export const SEARCH_SHOP_LIST_URL = BASE_URL + '/search_shops'//根据关键字搜索附件商铺列表
+export const CAPTCHA_URL = BASE_URL + '/captcha' //获取一次性验证码
+export const LOGIN_PWD_URL = BASE_URL + '/login_pwd' //用户名密码登录
+export const SEND_CODE_URL = BASE_URL + '/sendcode'//发送短信验证码
+export const LOGIN_SMS_URL = BASE_URL + '/login_sms'//手机验证码登录
+export const USERINFO_URL = BASE_URL + '/userinfo'//根据会话获取用户信息
+export const LOGOUT_URL = BASE_URL + '/logout'//用户退出
