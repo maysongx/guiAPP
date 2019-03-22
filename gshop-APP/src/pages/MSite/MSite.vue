@@ -12,7 +12,7 @@
     </HeaderTop>
     首页导航
     <nav class="msite_nav">
-      <div class="swiper-container">
+      <div class="swiper-container" v-if="foodtypes.length">
         <div class="swiper-wrapper">
           <div v-for="(item,index) in foodTypesArray" :key="index" class="swiper-slide">
             <a v-for="(perItem,index2) in item" :key="index2" href="javascript:" class="link_to_food">
@@ -26,6 +26,7 @@
         <!-- Add Pagination -->
         <div class="swiper-pagination"></div>
       </div>
+      <img src="./images/msite_back.svg" v-else alt="">
     </nav>
     <!--附近商家列表-->
     <div class="shop_list">
@@ -60,40 +61,52 @@ export default {
   },
   computed: {
     ...mapState(['address', 'foodtypes']),
-
-    //将食物分类列表分为2个数组
+    //根据foodtypes一维数组生成一个2维数组  小数组中的元素个数最大是8
     foodTypesArray() {
-      const max = 8;
-      const {foodtypes} = this;
-      let smallArr1 = [];
-      let smallArr2 = [];
-      foodtypes.forEach((food, index) => {
-        if (index < max) {
-          smallArr1.push(food)
-        } else {
-          smallArr2.push(food)
+      const {foodtypes} = this
+      // 准备空的2维数组
+      const arr = []
+      // 准备一个小数组(最大长度为8)
+      let minArr = []
+      // 遍历foodtypes
+      foodtypes.forEach(c => {
+        // 如果当前小数组已经满了, 创建一个新的
+        if (minArr.length === 8) {
+          minArr = []
         }
+        // 如果minArr是空的, 将小数组保存到大数组中
+        if (minArr.length === 0) {
+          arr.push(minArr)
+        }
+        // 将当前分类保存到小数组中
+        minArr.push(c)
       })
-      const NewArr = [smallArr1, smallArr2]
-      return NewArr;
+      return arr
+    }
+  },
+  watch: {
+    //监控foodtypes
+    foodtypes(value) {
+      //当数组中有数据的时候，但是此时数据是在虚拟内存中，界面还没有更新显示
+      //界面更新就立即创建Swiper对象
+      this.$nextTick(() => { //一旦完成界面更新, 立即调用(此条语句要写在数据更新之后)
+        //创建一个swiper实例（），实现轮播
+        var mySwiper = new Swiper('.swiper-container', {
+          loop: true, // 循环模式选项
+          // 如果需要分页器
+          pagination: {
+            el: '.swiper-pagination',
+          },
+        })
+      })
     }
   },
   mounted() {
-    //创建一个swiper实例，实现轮播
-    var mySwiper = new Swiper('.swiper-container', {
-      loop: true, // 循环模式选项
-      // 如果需要分页器
-      pagination: {
-        el: '.swiper-pagination',
-      },
-    })
-    //根据经纬度获取当前的的地址信息
-    this.getAddress();
     //获取食物分类列表
     this.getFoodTypes();
   },
   methods: {
-    ...mapActions(['getAddress', 'getFoodTypes'])
+    ...mapActions(['getFoodTypes'])
   }
 }
 </script>

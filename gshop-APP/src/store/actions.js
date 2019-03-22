@@ -18,18 +18,22 @@ import {
 export default {
   //根据经纬度获取当前地址信息
   async getAddress({commit, state}) {
-    const address = await reqAddress(state.latitude, state.longitude);
-    commit(RECEIVE_ADDRESS, address.data)
+    //发送异步ajax请求
+    const result = await reqAddress(state.latitude, state.longitude);
+    const address = result.data;
+    //提交mutation
+    commit(RECEIVE_ADDRESS, {address})
   },
   //获取食物分类
   async getFoodTypes({commit}) {
-    const foodTypes = await reqFoodTypes()
-    commit(RECEIVE_FOODTYPES, foodTypes.data)
+    const result = await reqFoodTypes()
+    const foodtypes = result.data;
+    commit(RECEIVE_FOODTYPES, {foodtypes})
   },
   //根据经纬度获取商铺列表
   async getShopList({commit, state}) {
-    const shops = await reqShopList(state.latitude, state.longitude)
-    commit(RECEIVE_SHOPLIST, shops.data)
+    const result = await reqShopList(state.latitude, state.longitude)
+    const shoplist = result.data;
+    commit(RECEIVE_SHOPLIST, {shoplist})
   }
-
 }

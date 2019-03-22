@@ -119,15 +119,15 @@ export default {
 }
 ```
 
-# 6. mutationsjs：直接更新state中的状态
+# 6. mutationsjs：直接更新state中的状态  注意接收的数据是对象
 ```
 import {
   RECEIVE_ADDRESS
 } from './mutation-types'
 
 export default {
-  //根据经纬度获取当前位置信息
-  [RECEIVE_ADDRESS](state, address) {
+  //根据经纬度获取当前位置信息  注意是对象
+  [RECEIVE_ADDRESS](state, {address}) {
     state.address = address
   }
 }
@@ -148,8 +148,11 @@ import {
 export default {
   //根据经纬度获取当前地址信息
   async getAddress({commit, state}) {
-    const address = await reqAddress(state.latitude, state.longitude);
-    commit(RECEIVE_ADDRESS, address.data)
+    //发送异步ajax请求
+       const result = await reqAddress(state.latitude, state.longitude);
+       const address = result.data;
+       //提交mutation
+       commit(RECEIVE_ADDRESS, {address})
   }
 }
 ```
