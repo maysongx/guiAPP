@@ -4,16 +4,16 @@
       <div class="login_header">
         <h2 class="login_logo">硅谷外卖</h2>
         <div class="login_header_title">
-          <a href="javascript:;" class="on">短信登录</a>
-          <a href="javascript:;">密码登录</a>
+          <a :class="{on:isShowOn}" @click="isShowOn=true">短信登录</a>
+          <a :class="{on:!isShowOn}" @click="isShowOn=false">密码登录</a>
         </div>
       </div>
       <div class="login_content">
         <form>
-          <div class="on">
+          <div v-if="isShowOn" :class="{on:isShowOn}">
             <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号">
-              <button disabled="disabled" class="get_verification">获取验证码</button>
+              <input v-model="mobile" type="tel" maxlength="11" placeholder="手机号">
+              <button :disabled="{'disabled':isDisabled}" class="get_verification">获取验证码</button>
             </section>
             <section class="login_verification">
               <input type="tel" maxlength="8" placeholder="验证码">
@@ -23,7 +23,7 @@
               <a href="javascript:;">《用户服务协议》</a>
             </section>
           </div>
-          <div>
+          <div v-else :class="{on:!isShowOn}">
             <section>
               <section class="login_message">
                 <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
@@ -54,7 +54,19 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data() {
+    return {
+      isShowOn: true, //短信登录、密码登录切换方式 on 是否显示
+      mobile: '',//用户手机号
+    }
+  },
+  computed: {
+    //获取验证码按钮是否可用   返回true是不可用
+    isDisabled() {
+      return false;
+    }
+  }
 }
 </script>
 
