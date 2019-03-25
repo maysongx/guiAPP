@@ -45,7 +45,7 @@ export default {
     const shoplist = result.data;
     commit(RECEIVE_SHOPLIST, {shoplist})
   },
-  //(提交)用户信息  并保存用户信息
+  //(提交)同步提交用户信息  并保存用户信息
   submitUserInfo({commit}, userInfo) {
     commit(RECEIVE_USER_INFO, {userInfo});
   },

@@ -9,17 +9,17 @@
         </div>
       </div>
       <div class="login_content">
-        <form>
+        <form @submit.prevent="login">
           <div v-if="loginWay" :class="{on:loginWay}">
             <section class="login_message">
               <input v-model="phone" type="tel" maxlength="11" placeholder="手机号">
-              <button :disabled="!rightPhone" class="get_verification" :class="{right_phone:rightPhone}"
-                      @click.prevent="getCode">
-                <span>{{computeTime>0?computeTime+'s':'获取验证码'}}</span>
+              <button @click.prevent="getCode" :disabled="!rightPhone" class="get_verification"
+                      :class="{right_phone:rightPhone}">
+                {{computeTime>0?`已发送(${computeTime}s)`:'获取验证码'}}
               </button>
             </section>
             <section class="login_verification">
-              <input v-model="code" type="tel" maxlength="8" placeholder="验证码">
+              <input v-model="code" type="text" maxlength="8" placeholder="验证码">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -29,18 +29,19 @@
           <div v-else :class="{on:!loginWay}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="text" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
               </section>
               <section class="login_verification">
-                <input type="tel" maxlength="8" placeholder="密码">
-                <div class="switch_button off">
+                <input :type="showPassword?'text':'password'" v-model="pwd" maxlength="8" placeholder="密码">
+                <div class="switch_button" :class="showPassword?'on':'off'" @click="showPassword=!showPassword">
                   <div class="switch_circle"></div>
-                  <span class="switch_text">...</span>
+                  <span class="switch_text">{{showPassword?'abc':''}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
+                <img class="get_verification" ref="captchaImg" src="http://localhost:4000/captcha" alt="captcha"
+                     @click="getCaptcha">
               </section>
             </section>
           </div>
@@ -52,36 +53,46 @@
         <i class="iconfont iconjiantou-zuo"></i>
       </a>
     </div>
+    <AlertTip :alertText="alertText" v-show="showAlert" @closeTip="closeTip"/>
   </section>
 </template>
 
 <script>
+import {reqSendCode, reqLoginCode, reqLoginPwd} from '../../api/index'
+import AlertTip from '../../components/AlertTip/AlertTip'
+
 export default {
   name: 'Login',
+  components: {
+    AlertTip
+  },
   data() {
     return {
       loginWay: true, //登录方式、true代表短信登录、false代表密码登录
-      phone: '',//用户手机号
+      computeTime: 0,//60秒倒计时的计时时间
+      showAlert: false,//是否显示提示框 默认是不显示
+      alertText: '',//提示信息
+      showPassword: false,//是否明文显示密码
+      phone: '18721639928',//用户手机号
       code: '',//短信验证码
-      computeTime: 0,//60秒倒计时
+      pwd: '',//用户密码
+      name: '',//用户手机或邮箱
+      captcha: '',//图片验证码
+      captchaImg: '' //一次性验证码img
     }
   },
   computed: {
-    //获取验证码按钮是否可用   返回true是不可用
-    isDisabled() {
-      return false;
-    },
     //验证手机号 11位数字即可
     rightPhone() {
       return /^1\d{10}$/.test(this.phone);
     }
   },
   mounted() {
-
   },
   methods: {
-    //获取验证码
-    getCode() {
+    //获取验证码和启动倒计时
+    async getCode() {
+      //倒计时60秒
       if (this.computeTime === 0) {
         //初始化时间
         this.computeTime = 10;
@@ -94,8 +105,98 @@ export default {
           }
         }, 1000)
       }
+
+      //获取短信验证码(发送 ajax 请求(请求后台向指定手机号发验证码短信))
+      const result = await reqSendCode(this.phone);
+      if (result.code === 0) {
+        this.showAlertDialog('发送成功')
+        // 停止倒计时
+        if (this.computeTime) {
+          this.computeTime = 0
+          clearInterval(this.intervalId)
+        }
+      } else {
+        this.computeTime = 0
+        clearInterval(this.intervalId)
+        this.showAlertDialog(result.msg)
+      }
+    },
+
+    //用户登录
+    async login() {
+      const testPlate = /^\d{6}$/;
+      let result
+      if (this.loginWay) {
+        //短信登录
+        const {rightPhone, phone, code} = this
+        if (!rightPhone) {
+          //手机号不正确
+          this.showAlertDialog('手机号不正确')
+          return false
+        } else if (!(testPlate.test(this.code))) {
+          //验证码必须是6位数字
+          this.showAlertDialog('验证码必须是6位数字1')
+          return false
+        }
+        result = await reqLoginCode(phone, code)
+      } else {
+        //账号密码登录
+        const {name, pwd, captcha} = this
+        if (!name) {
+          //手机号不正确
+          this.showAlertDialog('手机号不正确')
+          return false
+        } else if (!(testPlate.test(pwd))) {
+          //密码必须是6位数字
+          this.showAlertDialog('密码必须是6位数字')
+          return false
+        } else if (!captcha) {
+          //验证码必须是6位数字
+          this.showAlertDialog('验证码必须是必填的')
+          return false
+        }
+        result = await reqLoginPwd({name, pwd, captcha})
+      }
+      //停止定时器
+      if (this.computeTime) {
+        this.computeTime = 0
+        clearInterval(this.intervalId)
+      }
+      //处理结果数据
+      if (result.code === 0) {
+        const userInfo = result.data
+        //如果用户登录成功，1.跳转回个人中心页面2. 保存用户信息
+        this.$router.replace('/profile')
+        this.$store.dispatch('submitUserInfo', result.data)
+      } else {
+        //失败
+        const msg = result.msg
+        //显示警告提示信息
+        this.showAlertDialog(msg)
+        //刷新图片验证码
+        this.getCaptcha()
+      }
+    },
+
+    //显示信息提示框
+    showAlertDialog(alertText) {
+      this.showAlert = true;
+      this.alertText = alertText
+    },
+
+    //获取一次性验证码
+    getCaptcha() {
+      //也可以使用refs设置
+      this.$refs.captchaImg.src = 'http://localhost:4000/captcha?time=' + new Date();
+    },
+
+    //关闭弹出框
+    closeTip() {
+      this.showAlert = false
+      this.alertText = ''
     }
-  },
+  }
+  ,
 }
 </script>
 
@@ -214,14 +315,17 @@ export default {
                 &.off {
                   background: #fff;
 
-                  .switch_text {
-                    float: right;
-                    color: #ddd;
+                  .switch_circle {
+                    left: -1px;
                   }
                 }
 
                 &.on {
                   background: #02a774;
+
+                  .switch_circle {
+                    left: 25px;
+                  }
                 }
 
                 > .switch_circle {

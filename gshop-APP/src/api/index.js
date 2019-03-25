@@ -42,20 +42,17 @@ export const reqShopList = (longitude, latitude) => ajaxRequest(SHOP_LIST_URL, {
 * */
 export const reqSearchShopList = (geohash, keyword) => ajaxRequest(SEARCH_SHOP_LIST_URL, {geohash, keyword})
 
-// 5、获取一次性验证码  http://localhost:3000/captcha
-export const reqCaptcha = () => ajaxRequest(CAPTCHA_URL)
-
 /*
 * 6、用户名密码登陆
 * 参数：用户名name  密码pwd  验证码captcha
 * 请求方式：post
 * */
-export const reqLoginPwd = (name, pwd, captcha) => ajaxRequest(LOGIN_PWD_URL, {name, pwd, captcha}, 'post')
+export const reqLoginPwd = ({name, pwd, captcha}) => ajaxRequest(LOGIN_PWD_URL, {name, pwd, captcha}, 'post')
 
 /*
 * 7、发送短信验证码
 * 参数：phone手机号码
-* 实例：http://localhost:4000/sendcode?phone=13716962779
+* 实例：http://localhost:4000/sendcode?phone=18721639928
 * */
 export const reqSendCode = phone => ajaxRequest(SEND_CODE_URL, {phone})
 
@@ -65,7 +62,7 @@ export const reqSendCode = phone => ajaxRequest(SEND_CODE_URL, {phone})
 * */
 export const reqLoginCode = (phone, code) => ajaxRequest(LOGIN_SMS_URL, {phone, code}, 'post')
 
-// 9、根据会话获取用户信息  http://localhost:3000/userinfo
+// 9、根据会话获取用户信息  http://localhost:4000/userinfo
 export const reqUserInfo = () => ajaxRequest(USERINFO_URL)
 
 // 10、用户登出   http://localhost:4000/logout

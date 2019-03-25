@@ -6,8 +6,8 @@
         <i style="font-size: 26px;color: #fff;" class="iconfont iconsearch"></i>
       </router-link>
       <!--登录-->
-      <router-link :to="userInfo.id?'/frofile':'/login'" slot="right" class="header_login">
-        <span v-if="!userInfo.id" class="header_login_text">登录|注册</span>
+      <router-link :to="userInfo._id ? '/profile':'/login'" slot="right" class="header_login">
+        <span v-if="!userInfo._id" class="header_login_text">登录|注册</span>
         <span v-else class="header_login_text">
           <i class="iconfont iconperson"></i>
         </span>

@@ -2,12 +2,12 @@
   <section class="profile">
     <HeaderTop title="我的"/>
     <section class="profile-number">
-      <router-link :to="userInfo._id?'/userinfo':'/login'" class="profile-link">
+      <router-link :to="userInfo._id ? '/userinfo':'/login'" class="profile-link">
         <div class="profile_image">
           <i class="iconfont iconperson"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top">{{userInfo.name || '登录/注册' }}</p>
+          <p class="user-info-top" v-if="!userInfo.phone">{{userInfo.name|| '登录/注册' }}</p>
           <p>
                 <span class="user-icon">
                   <i class="iconfont iconmobile"></i>
@@ -88,8 +88,10 @@
         </div>
       </a>
     </section>
-    <span @click="showAlertTip" style="margin-top: 20px;overflow: hidden;display: block;">测试弹出框</span>
-    <AlertTip v-if="isShowTip" alertText="确定要关闭吗？" @closeTip="closeTip"/>
+    <section v-if="userInfo._id" class="profile_my_order border-1px">
+      <mt-button style="width: 100%" type="danger" @click="logout">退出登录</mt-button>
+    </section>
+    <AlertTip v-if="isShowTip" :alertText="alertText" @closeTip="closeTip"/>
   </section>
 </template>
 
@@ -103,7 +105,8 @@ export default {
   name: 'Profile',
   data() {
     return {
-      isShowTip: false
+      isShowTip: false,//是否显示信息弹出框
+      alertText: '' //信息弹出框的信息展示
     }
   },
   components: {
@@ -118,9 +121,16 @@ export default {
     showAlertTip() {
       this.isShowTip = true;
     },
-    //关闭弹出框
+    //关闭弹出框 确定退出登录
     closeTip() {
       this.isShowTip = false;
+      this.alertText = ''
+      this.$store.dispatch('loginOut')
+    },
+    //退出登录
+    logout() {
+      this.isShowTip = true;
+      this.alertText = '您确定要退出登录吗？'
     }
   }
 }
