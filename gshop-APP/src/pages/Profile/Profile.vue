@@ -2,17 +2,17 @@
   <section class="profile">
     <HeaderTop title="我的"/>
     <section class="profile-number">
-      <router-link to="/login" class="profile-link">
+      <router-link :to="userInfo._id?'/userinfo':'/login'" class="profile-link">
         <div class="profile_image">
           <i class="iconfont iconperson"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top">登录/注册</p>
+          <p class="user-info-top">{{userInfo.name || '登录/注册' }}</p>
           <p>
                 <span class="user-icon">
                   <i class="iconfont iconmobile"></i>
                 </span>
-            <span class="icon-mobile-number">暂无绑定手机号</span>
+            <span class="icon-mobile-number">{{userInfo.phone||'暂无绑定手机号'}}</span>
           </p>
         </div>
         <span class="arrow">
@@ -88,16 +88,40 @@
         </div>
       </a>
     </section>
+    <span @click="showAlertTip" style="margin-top: 20px;overflow: hidden;display: block;">测试弹出框</span>
+    <AlertTip v-if="isShowTip" alertText="确定要关闭吗？" @closeTip="closeTip"/>
   </section>
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 import HeaderTop from '../../components/HeaderTop/HeaderTop'
+import AlertTip from '../../components/AlertTip/AlertTip'
 
 export default {
   name: 'Profile',
+  data() {
+    return {
+      isShowTip: false
+    }
+  },
   components: {
-    HeaderTop
+    HeaderTop,
+    AlertTip
+  },
+  computed: {
+    ...mapState(['userInfo'])
+  },
+  methods: {
+    //显示弹出框
+    showAlertTip() {
+      this.isShowTip = true;
+    },
+    //关闭弹出框
+    closeTip() {
+      this.isShowTip = false;
+    }
   }
 }
 </script>

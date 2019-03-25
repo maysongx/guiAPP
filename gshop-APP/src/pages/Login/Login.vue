@@ -4,26 +4,29 @@
       <div class="login_header">
         <h2 class="login_logo">硅谷外卖</h2>
         <div class="login_header_title">
-          <a :class="{on:isShowOn}" @click="isShowOn=true">短信登录</a>
-          <a :class="{on:!isShowOn}" @click="isShowOn=false">密码登录</a>
+          <a :class="{on:loginWay}" @click="loginWay=true">短信登录</a>
+          <a :class="{on:!loginWay}" @click="loginWay=false">密码登录</a>
         </div>
       </div>
       <div class="login_content">
         <form>
-          <div v-if="isShowOn" :class="{on:isShowOn}">
+          <div v-if="loginWay" :class="{on:loginWay}">
             <section class="login_message">
-              <input v-model="mobile" type="tel" maxlength="11" placeholder="手机号">
-              <button :disabled="{'disabled':isDisabled}" class="get_verification">获取验证码</button>
+              <input v-model="phone" type="tel" maxlength="11" placeholder="手机号">
+              <button :disabled="!rightPhone" class="get_verification" :class="{right_phone:rightPhone}"
+                      @click.prevent="getCode">
+                <span>{{computeTime>0?computeTime+'s':'获取验证码'}}</span>
+              </button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input v-model="code" type="tel" maxlength="8" placeholder="验证码">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
               <a href="javascript:;">《用户服务协议》</a>
             </section>
           </div>
-          <div v-else :class="{on:!isShowOn}">
+          <div v-else :class="{on:!loginWay}">
             <section>
               <section class="login_message">
                 <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
@@ -57,16 +60,42 @@ export default {
   name: 'Login',
   data() {
     return {
-      isShowOn: true, //短信登录、密码登录切换方式 on 是否显示
-      mobile: '',//用户手机号
+      loginWay: true, //登录方式、true代表短信登录、false代表密码登录
+      phone: '',//用户手机号
+      code: '',//短信验证码
+      computeTime: 0,//60秒倒计时
     }
   },
   computed: {
     //获取验证码按钮是否可用   返回true是不可用
     isDisabled() {
       return false;
+    },
+    //验证手机号 11位数字即可
+    rightPhone() {
+      return /^1\d{10}$/.test(this.phone);
     }
-  }
+  },
+  mounted() {
+
+  },
+  methods: {
+    //获取验证码
+    getCode() {
+      if (this.computeTime === 0) {
+        //初始化时间
+        this.computeTime = 10;
+        //启动循环定时器, 每隔 1s 减少 1
+        this.intervalId = setInterval(() => {
+          this.computeTime--
+          //如果到时, 停止计时
+          if (this.computeTime === 0) {
+            clearInterval(this.intervalId)
+          }
+        }, 1000)
+      }
+    }
+  },
 }
 </script>
 
@@ -153,6 +182,10 @@ export default {
                 color: #ccc;
                 font-size: 14px;
                 background: transparent;
+
+                &.right_phone {
+                  color: #1b1919;
+                }
               }
             }
 

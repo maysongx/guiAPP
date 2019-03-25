@@ -6,8 +6,11 @@
         <i style="font-size: 26px;color: #fff;" class="iconfont iconsearch"></i>
       </router-link>
       <!--登录-->
-      <router-link to="/login" slot="right" class="header_login">
-        <span class="header_login_text">登录|注册</span>
+      <router-link :to="userInfo.id?'/frofile':'/login'" slot="right" class="header_login">
+        <span v-if="!userInfo.id" class="header_login_text">登录|注册</span>
+        <span v-else class="header_login_text">
+          <i class="iconfont iconperson"></i>
+        </span>
       </router-link>
     </HeaderTop>
     首页导航
@@ -60,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['address', 'foodtypes']),
+    ...mapState(['address', 'foodtypes', 'userInfo']),
     //根据foodtypes一维数组生成一个2维数组  小数组中的元素个数最大是8
     foodTypesArray() {
       const {foodtypes} = this
