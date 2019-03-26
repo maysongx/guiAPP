@@ -7,10 +7,19 @@ import state from './state'
 import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
+//引入局部模块的store
+import Shop from './Shop/index'
+import MSite from './MSite/index'
+import Cart from './Cart/index'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  modules: {
+    Shop,
+    MSite,
+    Cart
+  },
   state,
   mutations,
   actions,

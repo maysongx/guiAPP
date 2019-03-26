@@ -3,8 +3,23 @@
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
+
 export default {
-  name: 'ShopRatings'
+  path: 'Shop',
+  name: 'ShopRatings',
+  computed: {
+    ...mapState('Shop', {
+      ratings: state => state.ratings,
+    })
+  },
+  mounted() {
+    //获取评价信息列表
+    this.getShopRatingsList()
+  },
+  methods: {
+    ...mapActions('Shop', ['getShopRatingsList'])
+  }
 }
 </script>
 

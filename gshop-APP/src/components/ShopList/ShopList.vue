@@ -61,6 +61,7 @@ import {mapState, mapActions} from 'vuex'
 import Star from '../Star/Star'
 
 export default {
+  path: 'MSite',
   name: 'ShopList',
   components: {
     Star
@@ -72,17 +73,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['shoplist'])
+    ...mapState('MSite', {
+      shoplist: state => state.shoplist
+    })
   },
   mounted() {
     //根据经纬度 获取周围的商铺信息
     this.getShopList()
   },
   methods: {
-    ...mapActions(['getShopList'])
+    ...mapActions('MSite', ['getShopList'])
   }
 }
-
 </script>
 
 <style scoped lang='scss'>

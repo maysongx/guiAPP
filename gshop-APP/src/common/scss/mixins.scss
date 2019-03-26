@@ -32,6 +32,10 @@ $bc: #e4e4e4;
   }
 }
 
+@mixin border-none() {
+  border: 0px;
+}
+
 //根据像素比缩放1px像素边框
 @media screen and (-webkit-device-pixel-ratio: 2) {
   .border-1px {

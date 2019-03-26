@@ -3,8 +3,6 @@
 * */
 import {
   RECEIVE_ADDRESS,
-  RECEIVE_FOODTYPES,
-  RECEIVE_SHOPLIST,
   RECEIVE_USER_INFO,
   RESET_USER_INFO
 } from './mutation-types'
@@ -14,14 +12,6 @@ export default {
   [RECEIVE_ADDRESS](state, {address}) {
     state.address = address
   },
-  //获取食物分类信息列表
-  [RECEIVE_FOODTYPES](state, {foodtypes}) {
-    state.foodtypes = foodtypes;
-  },
-  //根据经纬度获取商铺列表
-  [RECEIVE_SHOPLIST](state, {shoplist}) {
-    state.shoplist = shoplist;
-  },
   //获取用户信息
   [RECEIVE_USER_INFO](state, {userInfo}) {
     state.userInfo = userInfo
@@ -29,5 +19,5 @@ export default {
   //重置用户信息
   [RESET_USER_INFO](state) {
     state.userInfo = {}
-  }
+  },
 }

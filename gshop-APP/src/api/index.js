@@ -67,3 +67,12 @@ export const reqUserInfo = () => ajaxRequest(USERINFO_URL)
 
 // 10、用户登出   http://localhost:4000/logout
 export const reqLoginOut = () => ajaxRequest(LOGOUT_URL)
+
+/*通过mockjs模拟接口请求*/
+
+// 11. 返回商家食物列表
+export const reqGoodList = () => ajaxRequest('/goodsList')
+// 12. 返回评价列表
+export const reqRatingsList = () => ajaxRequest('/ratingsList')
+// 13. 返回商家信息列表
+export const reqInfoList = () => ajaxRequest('/infoList')

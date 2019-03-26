@@ -51,6 +51,7 @@ import ShopList from '../../components/ShopList/ShopList'
 import Login from '../../pages/Login/Login'
 
 export default {
+  path: 'MSite',
   name: 'MSite',
   components: {
     HeaderTop,
@@ -63,7 +64,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['address', 'foodtypes', 'userInfo']),
+    ...mapState(['address', 'userInfo']),
+    ...mapState('MSite', {
+      foodtypes: state => state.foodtypes
+    }),
     //根据foodtypes一维数组生成一个2维数组  小数组中的元素个数最大是8
     foodTypesArray() {
       const {foodtypes} = this
@@ -109,7 +113,7 @@ export default {
     this.getFoodTypes();
   },
   methods: {
-    ...mapActions(['getFoodTypes'])
+    ...mapActions('MSite', ['getFoodTypes'])
   }
 }
 </script>
