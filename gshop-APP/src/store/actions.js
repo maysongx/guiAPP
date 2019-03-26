@@ -62,7 +62,6 @@ export default {
   async loginOut({commit}) {
     const result = await reqLoginOut();
     if (result.code === 0) {
-      const userInfo = result.data;
       //重置用户信息
       commit(RESET_USER_INFO);
     }

@@ -9,12 +9,22 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import HeaderTop from '../../components/HeaderTop/HeaderTop'
 
 export default {
   name: 'Search',
+  data() {
+    return {
+      actions: ['a', 'b'],
+      sheetVisible: true
+    }
+  },
   components: {
     HeaderTop
+  },
+  mounted() {
+
   }
 }
 </script>
@@ -24,6 +34,7 @@ export default {
 
   .search {
     width: 100%;
+
     .search_form {
       @include clearFix();
       margin-top: 45px;

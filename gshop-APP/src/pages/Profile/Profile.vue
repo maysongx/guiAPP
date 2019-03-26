@@ -91,15 +91,13 @@
     <section v-if="userInfo._id" class="profile_my_order border-1px">
       <mt-button style="width: 100%" type="danger" @click="logout">退出登录</mt-button>
     </section>
-    <AlertTip v-if="isShowTip" :alertText="alertText" @closeTip="closeTip"/>
   </section>
 </template>
 
 <script>
 import {mapState} from 'vuex'
-
 import HeaderTop from '../../components/HeaderTop/HeaderTop'
-import AlertTip from '../../components/AlertTip/AlertTip'
+import {MessageBox, Toast} from 'mint-ui';
 
 export default {
   name: 'Profile',
@@ -110,27 +108,24 @@ export default {
     }
   },
   components: {
-    HeaderTop,
-    AlertTip
+    HeaderTop
   },
   computed: {
     ...mapState(['userInfo'])
   },
+  mounted() {
+  },
   methods: {
-    //显示弹出框
-    showAlertTip() {
-      this.isShowTip = true;
-    },
-    //关闭弹出框 确定退出登录
-    closeTip() {
-      this.isShowTip = false;
-      this.alertText = ''
-      this.$store.dispatch('loginOut')
-    },
     //退出登录
     logout() {
-      this.isShowTip = true;
-      this.alertText = '您确定要退出登录吗？'
+      MessageBox.confirm('确定要退出登录吗?').then(
+        action => {
+          this.$store.dispatch('loginOut')
+          Toast('退出成功');
+        },
+        action => {
+          console.log('取消')
+        });
     }
   }
 }
