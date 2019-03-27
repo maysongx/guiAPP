@@ -72,6 +72,7 @@ module.exports = {
     //禁止出现未使用过的变量
     'no-unused-vars': 'off',
     'space-before-function-paren': 'off',//强制在 function的左括号之前使用一致的空格
+    // 'no-unused-expressions': 'off',//禁止出现未使用过的表达式
   },
   overrides: [
     {

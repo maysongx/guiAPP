@@ -1,5 +1,6 @@
 import actions from './actions'
 import mutations from './mutations'
+import getters from './getters'
 
 export default {
   namespaced: true,
@@ -7,5 +8,6 @@ export default {
     shopCartsList: [] // 购物车列表
   },
   actions,
-  mutations
+  mutations,
+  getters
 }

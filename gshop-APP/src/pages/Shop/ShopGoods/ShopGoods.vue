@@ -21,7 +21,7 @@
               :class="`item-${index}`">
             <h1 class="title">{{ good.name }}</h1>
             <ul>
-              <li v-for="(food,index2) in good.foods" :key="index2"
+              <li @click="showFood(food)" v-if="good.foods" v-for="(food,index2) in good.foods" :key="index2"
                   class="food-item bottom-border-1px">
                 <div class="icon"><img width="57" height="57" :src="food.icon"></div>
                 <div class="content">
@@ -45,6 +45,8 @@
         </ul>
       </div>
     </div>
+    <ShopCart/>
+    <Food :food="perFood" ref="perFood"/>
   </div>
 </template>
 
@@ -67,6 +69,7 @@ export default {
     return {
       scrollY: 0, //右侧 Y 轴滑动的坐标
       tops: [], // 所有右侧分类li的scrollTop的值组成的数组 初始化完成后，就统计完毕
+      perFood: {}
     }
   },
   computed: {
@@ -133,11 +136,19 @@ export default {
     },
     //点击左侧分类项
     clickMenuItem(index) {
+      console.log('当前选中项下标：' + index)
       //获取右侧对象下标的tops数值
       const top = this.tops[index]
       this.scrollY = top
       //滑动到指定的位置
       this.foodsScroll.scrollTo(0, -top, 300)
+    },
+    //显示food详细信息
+    showFood(food) {
+      //设置perFood的值
+      this.perFood = food
+      //父组件调用子组件Food里面的toggleShow方法()
+      this.$refs.perFood.toggleShow()
     }
   }
 }

@@ -3,11 +3,12 @@
 * */
 import {
   JIA_FOOD_COUNT,
-  JIAN_FOOD_COUNT
+  JIAN_FOOD_COUNT,
+  CLEAT_CART_SHOP
 } from './mutation-types'
 
 export default {
-  //提交添加的食物列表
+  //更新food里面的count
   updateFoodCount({commit}, {food, isAdd}) {
     if (isAdd) {
       //增加count的数量
@@ -16,5 +17,9 @@ export default {
       //减少count的数量
       commit(JIAN_FOOD_COUNT, {food})
     }
+  },
+  //清空购物车
+  clearCartShopList({commit}) {
+    commit(CLEAT_CART_SHOP)
   }
 }
