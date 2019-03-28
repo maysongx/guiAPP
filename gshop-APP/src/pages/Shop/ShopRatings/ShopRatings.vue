@@ -58,7 +58,7 @@
                 <span v-for="(recommend,index2) in rating.recommend" :key="index2" class="item">{{recommend}}</span>
               </div>
               <!--定义了一个过滤器dateString-->
-              <div class="time">{{rating.rateTime | dateString}}</div>
+              <div class="time">{{rating.rateTime | formatTimestamp}}</div>
             </div>
           </li>
         </ul>
@@ -77,6 +77,8 @@
 import BScroll from 'better-scroll'
 import {mapState, mapActions} from 'vuex'
 import Star from '../../../components/Star/Star'
+// 过滤器formatTimestamp格式化时间戳
+import '../../../filters/index'
 
 export default {
   path: 'Shop',
@@ -102,23 +104,39 @@ export default {
       }, 0)
     },
 
-    //获取有评论内容的评价
+    //筛选评价内容
     filterRatings() {
+      /*
+      * selectType: 2（全部） rating.rateType (0/1)
+      * onlyContent: true // 是否只看有内容的 ===rating.text
+      *
+      * selectType: 0/1/2  如果是 0/1  需要判断是否与 rating.rateType 相等, 如果是 2 就不需要
+      * onlyContent: true/false 如果为 true 需要判断 rating.text 必须有值, 如果是 false就不需要
+      * */
+
       const ratings = this.ratings
       if (!ratings) {
         return []
       }
+      const {selectedTYpe, onlyContent} = this
       return ratings.filter((rating) => {
-        const {selectedTYpe, onlyContent} = this
-        const curRateType = rating.rateType
-        if (onlyContent) {
-          //只看有评论内容的数据
-          const ratingLength = rating.text.length
-          if (ratingLength > 0) {
-            return selectedTYpe === 2 ? rating : curRateType === selectedTYpe
-          }
+        const {rateType, text} = rating
+        //简洁写法
+        // if (selectedTYpe === 2) {
+        //   return !onlyContent || text.length > 0
+        // } else {
+        //   return rateType === selectedTYpe && (!onlyContent || rating.text.length > 0)
+        // }
+
+        //复杂的写法
+        if (selectedTYpe === 2) {
+          return onlyContent ? rating : text.length > 0
         } else {
-          return selectedTYpe === 2 ? rating : curRateType === selectedTYpe
+          if (onlyContent) {
+            return selectedTYpe === rateType && text.length > 0
+          } else {
+            return selectedTYpe === rateType
+          }
         }
       })
     }
@@ -144,10 +162,16 @@ export default {
     //设置选中项
     setSelectType(typeValue) {
       this.selectedTYpe = typeValue
+      this.$nextTick(() => {
+        this.ratingContScroll.refresh()
+      })
     },
     //切换是否只看有评论内容
     toggleOnlyContent() {
       this.onlyContent = !this.onlyContent
+      this.$nextTick(() => {
+        this.ratingContScroll.refresh()
+      })
     },
     //时间戳格式化函数
     formatTimestamp(timestamp) {

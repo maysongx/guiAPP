@@ -29,7 +29,7 @@
       </div>
       <div class="discounts-right">{{ info.supports.length }} 个优惠</div>
     </div>
-    
+
     <!--加载商家信息弹出框-->
     <transition name="fade">
       <div class="shop-brief-modal" v-if="shopShow">
@@ -158,6 +158,7 @@ export default {
         position: absolute;
         top: 10px;
         left: 0;
+        color: white;
 
         .icon-arrow_left {
           display: block;

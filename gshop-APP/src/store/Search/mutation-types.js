@@ -1,0 +1,1 @@
+export const RECEIVE_SHOP_LIST = 'receive_shop_list' //获取附近商铺列表

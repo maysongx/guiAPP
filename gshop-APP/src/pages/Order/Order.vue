@@ -11,9 +11,10 @@
 
 <script>
 import HeaderTop from '../../components/HeaderTop/HeaderTop'
+
 export default {
   name: 'Order',
-  components:{
+  components: {
     HeaderTop
   }
 }
@@ -24,6 +25,7 @@ export default {
 
   .order {
     width: 100%;
+
     .order_no_login {
       padding-top: 140px;
       width: 60%;

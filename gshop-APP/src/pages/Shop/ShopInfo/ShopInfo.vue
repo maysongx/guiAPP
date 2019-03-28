@@ -66,14 +66,17 @@ export default {
     })
   },
   watch: {
+    //Vue 实例将会在实例化时调用 $watch()，遍历 watch 对象的每一个属性。
     //监视info的数据（只有当info数据变化时，才触发） info 状态数据更新了, 但界面还没有真正更新
     info() {
+      alert('watch')
       this.$nextTick(() => {
         this.initScroll()
       })
     }
   },
   mounted() {
+    alert('mounted')
     //如果没有info数据，直接返回
     if (!this.info.pics) {
       return

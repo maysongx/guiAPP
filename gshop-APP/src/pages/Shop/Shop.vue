@@ -3,6 +3,7 @@
     <ShopHeader/>
     <div class="tab">
       <div class="tab-item">
+        <!--replace表示使用replace模式跳转路由-->
         <router-link to="/shop/goods" replace>点餐</router-link>
       </div>
       <div class="tab-item">
@@ -12,7 +13,9 @@
         <router-link to="/shop/info" replace>商家</router-link>
       </div>
     </div>
-    <router-view/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 

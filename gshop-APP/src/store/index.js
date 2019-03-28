@@ -11,6 +11,7 @@ import getters from './getters'
 import Shop from './Shop/index'
 import MSite from './MSite/index'
 import Cart from './Cart/index'
+import Search from './Search/index'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ export default new Vuex.Store({
   modules: {
     Shop,
     MSite,
-    Cart
+    Cart,
+    Search
   },
   state,
   mutations,
