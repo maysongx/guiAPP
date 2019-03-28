@@ -41,8 +41,8 @@
       </div>
       <!--评论列表-->
       <div class="rating-wrapper">
-        <ul v-if="ratings.length">
-          <li class="rating-item" v-for="(rating,index) in ratings" :key="index">
+        <ul v-if="filterRatings.length">
+          <li class="rating-item" v-for="(rating,index) in filterRatings" :key="index">
             <div class="avatar">
               <img width="28" height="28" :src="rating.avatar">
             </div>
@@ -54,7 +54,7 @@
               </div>
               <p class="text">{{rating.text}}</p>
               <div class="recommend">
-                <span class="iconfont" :class="rating.rateType===0?'iconzan':'icondaozanzan'"></span>
+                <span class="iconfont" :class="rating.rateType===0?'iconzan':'icondaozan'"></span>
                 <span v-for="(recommend,index2) in rating.recommend" :key="index2" class="item">{{recommend}}</span>
               </div>
               <!--定义了一个过滤器dateString-->
@@ -72,8 +72,9 @@
 * ratings评论列表中
 * rateType===0表示满意
 * rateType===1表示不满意
-*
+* rateType===2表示全部（接口里面没有2）
 * */
+import BScroll from 'better-scroll'
 import {mapState, mapActions} from 'vuex'
 import Star from '../../../components/Star/Star'
 
@@ -83,7 +84,7 @@ export default {
   data() {
     return {
       selectedTYpe: 2,  //默认全部是2  满意0 不满意1
-      onlyContent: false,//是否选中只看内容
+      onlyContent: true,//是否选中只看内容
     }
   },
   components: {
@@ -99,6 +100,27 @@ export default {
       return this.ratings.reduce((preTotal, rating) => {
         return preTotal + (rating.rateType === 0 ? 1 : 0)
       }, 0)
+    },
+
+    //获取有评论内容的评价
+    filterRatings() {
+      const ratings = this.ratings
+      if (!ratings) {
+        return []
+      }
+      return ratings.filter((rating) => {
+        const {selectedTYpe, onlyContent} = this
+        const curRateType = rating.rateType
+        if (onlyContent) {
+          //只看有评论内容的数据
+          const ratingLength = rating.text.length
+          if (ratingLength > 0) {
+            return selectedTYpe === 2 ? rating : curRateType === selectedTYpe
+          }
+        } else {
+          return selectedTYpe === 2 ? rating : curRateType === selectedTYpe
+        }
+      })
     }
   },
   // 定义了一个过滤器dateString
@@ -110,7 +132,12 @@ export default {
   },
   mounted() {
     //获取评价信息列表
-    this.getShopRatingsList()
+    this.getShopRatingsList().then(() => {
+      this.$nextTick(() => {
+        //初始化BScroll
+        this.initScroll()
+      })
+    })
   },
   methods: {
     ...mapActions('Shop', ['getShopRatingsList']),
@@ -118,14 +145,19 @@ export default {
     setSelectType(typeValue) {
       this.selectedTYpe = typeValue
     },
-    //切换是否只看评论内容
+    //切换是否只看有评论内容
     toggleOnlyContent() {
       this.onlyContent = !this.onlyContent
     },
-
     //时间戳格式化函数
     formatTimestamp(timestamp) {
       return new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    },
+    //初始化BScroll
+    initScroll() {
+      this.ratingContScroll = new BScroll('.ratings', {
+        click: true
+      })
     }
   }
 }
